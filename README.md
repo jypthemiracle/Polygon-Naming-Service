@@ -1,15 +1,5 @@
-# Basic Sample Hardhat Project
+# The proof-of-concept Sigrid Name Service
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
-
-Try running some of the following tasks:
-
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+* This project demonstrates the concept of Ethereum Name Service, running on Polygon Mainnet.
+It has been deployed to [Polygon Mainnet](https://polygonscan.com/address/0xD20236Bf5c1eF7EAA3Af4e008a02F77681E4936b), and able to find the NFT minted after granting the domain priviliages to purchasers in [OpenSea Polygon Network](https://opensea.io/collection/sigrid-naming-service-v2).
+* See more at the repository, while being learned from [buildspace](buildspace.so).
