@@ -1,4 +1,5 @@
 require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-etherscan");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -27,5 +28,28 @@ module.exports = {
         settings: {}
       }
     ]
+  },
+  networks: {
+    mumbai: {
+      url: "https://polygon-mumbai.g.alchemy.com/v2/" + process.env.ALCHEMY_MUMBAI_KEY,
+      accounts: [process.env.METAMASK_PRIVATE_KEY],
+      gas: 9100000,
+      gasPrice: 8000000000
+    },
+    ropsten: {
+      url: "https://ethereum-ropsten-rpc.allthatnode.com/" + process.env.DSRV_ROPSTEN_KEY,
+      accounts: [process.env.METAMASK_PRIVATE_KEY],
+      gas: 9100000,
+      gasPrice: 8000000000
+    },
+    rinkeby: {
+      url: "https://ethereum-rinkeby-rpc.allthatnode.com/" + process.env.DSRV_ROPSTEN_KEY,
+      accounts: [process.env.METAMASK_PRIVATE_KEY],
+      gas: 9100000,
+      gasPrice: 8000000000
+    }
+  },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_KEY
   }
 };
