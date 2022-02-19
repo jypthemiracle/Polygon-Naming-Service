@@ -56,8 +56,9 @@ contract Domains is ERC721URIStorage {
             bytes(
                 string(
                     abi.encodePacked(
-                        '{"name":"', _name,
-                        '"description": "A domain on the Sigrid Name Service", "image": "data:image/svg+xml;base64,',
+                        '{"name": "',
+                        _name,
+                        '", "description": "A domain on the Ninja name service", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(finalSvg)),
                         '","length":"',
                         strLen,

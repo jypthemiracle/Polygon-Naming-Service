@@ -9,7 +9,7 @@ const main = async () => {
     await txn.wait();
     console.log("Minted domain jin.sigrid");
 
-    txn = await domainContract.setRecord("jin", "I am Sigrid Jin");
+    txn = await domainContract.setRecord("jin", "1234");
     await txn.wait();
     console.log("Set record for jin.sigrid");
 
