@@ -21,9 +21,12 @@ const main = async () => {
 
     const txn = await domainContract.register("sigridjin.polygon")
     await txn.wait();
-    
+
     const domainOwner = await domainContract.getAddress("sigridjin.polygon");
     console.log("Owner of domain: ", domainOwner);
+
+    txn = await domainContract.connect(owner).setRecord("sigridjin.polygon", "한국어입니다.");
+    await txn.wait();
 }
 
 const runMain = async () => {
