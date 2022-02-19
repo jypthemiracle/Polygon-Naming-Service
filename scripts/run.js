@@ -2,6 +2,7 @@
 // This means you will never have to actually do some sort of import into your files like:
 
 const main = async () => {
+    const [owner, randomPerson] = await hre.ethers.getSigners();
     // This will actually compile our contract and generate the necessary files we need to work with our contract under the artifacts directory. 
     // Go check it out after you run this :)
     const domainContractFactory = await hre.ethers.getContractFactory('Domains');
@@ -16,6 +17,13 @@ const main = async () => {
     // Finally, once it's deployed domainContract.address will basically give us the address of the deployed contract. This address is how we can actually find our contract on the blockchain.
     // Right now on our local blockchain it's just us. So, this isn't that cool.
     console.log("contract deployed to: ", domainContract.address);
+    console.log("contract deployed to: ", owner.address);
+
+    const txn = await domainContract.register("sigridjin.polygon")
+    await txn.wait();
+    
+    const domainOwner = await domainContract.getAddress("sigridjin.polygon");
+    console.log("Owner of domain: ", domainOwner);
 }
 
 const runMain = async () => {
