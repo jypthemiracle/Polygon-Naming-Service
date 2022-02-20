@@ -89,6 +89,46 @@ const App = () => {
 		}
 	}
 
+	const switchNetwork = async() => {
+		if (window.ethereum) {
+			try {
+				await window.ethereum.request({
+					method: 'wallet_switchEthereumChain',
+					params: [{ chainId: '0x89' }]
+				})
+			} catch (error) {
+				if (error.code === 4902) {
+					window.alert('Hey! The polygon chain has not been added to your MetaMask! Please approve this action to progress.');
+					try {
+						await window.ethereum.request({
+							method: 'wallet_addEthereumChain',
+							params: [
+								{
+									chainId: "0x89",
+									rpcUrls: ["https://polygon-rpc.com"],
+			  
+									chainName: "Polygon Mainnet",
+									nativeCurrency: {
+									  name: "MATIC",
+									  symbol: "MATIC", // 2-6 characters long
+									  decimals: 18,
+									},
+									blockExplorerUrls: ["https://polygonscan.com/"],
+								},
+							],
+						});
+					} catch (error) {
+						window.alert('A problem encountered. please try again.');
+						console.log(error);
+					}
+				}
+				console.log(error);
+			}
+		} else {
+			alert('MetaMask is not installed. Please install it to use this app: https://metamask.io/download.html');
+		}
+	}
+
 	const renderImageWhenNotYetConnected = () => (
 		<div className="connect-wallet-container">
 			<img src="https://c.tenor.com/ahn1CHNNSxQAAAAC/sigrid-it-could-never-be-us.giff" alt="sigrid gif" />
@@ -104,9 +144,7 @@ const App = () => {
 				<div className="connect-wallet-container">
 					<p>Please connect to the Polygon Mainnet</p>
 					<p>You are now in {network}</p> 
-					<br>
-					
-					</br>
+					<button className='cta-button mint-button' onClick={switchNetwork}>Click here to swtich to Polygon Mainnet.</button>
 					<img src="https://c.tenor.com/_3o1oxx42_oAAAAC/sigrid-the-best-ive-ever-had.gif" alt="sigrid gif" />
 				</div>
 			);
@@ -114,6 +152,13 @@ const App = () => {
 
 		return (
 			<div className="form-container">
+				<br></br>
+				<br></br>
+				<br></br>
+				<img src="https://64.media.tumblr.com/0170f9aca251324a0a1308a0c0fc8872/tumblr_pjysi7An081wilf0ro4_500.gifv" alt="sigrid gif" />
+				<br></br>
+				<br></br>
+				<br></br>
 				<div className="first-row">
 					<input type="text" value={domain} placeholder='Your domain' onChange={e => setDomain(e.target.value)}></input>
 					<p className='tld'>{TLD}</p>
