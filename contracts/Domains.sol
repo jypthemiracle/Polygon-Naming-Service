@@ -10,6 +10,8 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract Domains is ERC721URIStorage {
 
+    address payable public owner;
+
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
@@ -21,6 +23,7 @@ contract Domains is ERC721URIStorage {
     mapping(string => string) public records;
 
     constructor(string memory _tld) payable ERC721("Sigrid Naming Service", "SNS") {
+        owner = payable(msg.sender);
         tld = _tld;
         console.log("hello, domain contract is here.");
     }
@@ -117,4 +120,20 @@ contract Domains is ERC721URIStorage {
 
         return true;
     }
+
+    modifier onlyOwner() {
+        require(isOwner());
+        _;
+    }
+
+    function isOwner() public view returns (bool) {
+        return msg.sender == owner;
+    }
+
+    function withdraw() public onlyOwner {
+	    uint amount = address(this).balance;
+    
+	    (bool success, ) = msg.sender.call{value: amount}("");
+	    require(success, "Failed to withdraw Matic");
+    } 
 }
