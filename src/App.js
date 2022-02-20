@@ -23,6 +23,8 @@ const App = () => {
 	const [domain, setDomain] = useState('');
 	const [record, setRecord] = useState('');
 	const [network, setNetwork] = useState('');
+	const [editing, setEditing] = useState(false);
+	const [mints, setMints] = useState([]);
 
 	const checkWhetherWalletConnected = async () => {
 		// window.ethereum
@@ -89,6 +91,35 @@ const App = () => {
 		}
 	}
 
+	const updateDomain = async() => {
+		if (!record || !domain) {
+			return;
+		}
+		setEditing(true);
+		console.log("Updating domain: ", domain, "with record", record);
+
+		try {
+			const { ethereum } = window;
+			if (ethereum) {
+				const provider = new ethers.providers.Web3Provider(ethereum);
+				const signer = provider.getSigner();
+				const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
+
+				let tx = await contract.setRecord(domain, record);
+				trackPromise(await tx.wait());
+				console.log("Record set https://polygonscan.com/tx/"+tx.hash);
+
+				fetchMints();
+				setRecord('');
+				setDomain('');
+			}
+		} catch (error) {
+			alert("A problem encountered. please try again.");
+			console.log(error);
+		}
+		setEditing(false);
+	}
+
 	const switchNetwork = async() => {
 		if (window.ethereum) {
 			try {
@@ -129,6 +160,35 @@ const App = () => {
 		}
 	}
 
+	const fetchMints = async() => {
+		try {
+			const { ethereum } = window;
+			if (ethereum) {
+				const provider = new ethers.providers.Web3Provider(ethereum);
+				const signer = provider.getSigner();
+				const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
+				
+				const names = await contract.getAllNames();
+				
+				const mintRecords = await Promise.all(names.map(async (name) => {
+					const mintRecord = await contract.records(name);
+					const owner = await contract.domains(name);
+					return {
+						id: names.indexOf(name),
+						name: name,
+						record: mintRecord,
+						owner: owner,
+					}
+				}));
+				console.log("MINTS FETCHED ", mintRecords);
+				setMints(mintRecords);
+			}
+		} catch (error) {
+			window.alert('A problem encountered. please try again.');
+			console.log(error);
+		}
+	}
+
 	const renderImageWhenNotYetConnected = () => (
 		<div className="connect-wallet-container">
 			<img src="https://c.tenor.com/ahn1CHNNSxQAAAAC/sigrid-it-could-never-be-us.giff" alt="sigrid gif" />
@@ -165,12 +225,24 @@ const App = () => {
 				</div>
 				<input type="text" value={record} placeholder="Your record" onChange={e => setRecord(e.target.value)}></input>
 				<div className="button-container">
-					<button className='cta-button mint-button' disabled={null} onClick={mintDomain}>
-						Mint
-					</button>
-					{/* <button className='cta-button mint-button' disabled={null} onClick={null}>
-						Set data
-					</button> */}
+					{/* If the editing variable is true, return the "Set record" and "Cancel" button */}
+					{editing ? (
+						<div className="button-container">
+							// This will call the updateDomain function we just made
+							<button className='cta-button mint-button' disabled={editing} onClick={updateDomain}>
+								Set record
+							</button>  
+							// This will let us get out of editing mode by setting editing to false
+							<button className='cta-button mint-button' onClick={() => {setEditing(false)}}>
+								Cancel
+							</button>  
+						</div>
+					) : (
+						// If editing is not true, the mint button will be returned instead
+						<button className='cta-button mint-button' disabled={editing} onClick={mintDomain}>
+							Mint
+						</button>
+					)}
 				</div>
 			</div>
 		)
@@ -222,6 +294,11 @@ const App = () => {
 					window.alert('Record Set! Check at PolygonScan. https://polygonscan.com/tx/' + tx2.hash);
 				}
 
+				// Call fetchMints after 2 seconds
+				setTimeout(() => {
+					fetchMints();
+				}, 2000);
+
 				setDomain('');
 				setRecord('');
 			} else {
@@ -237,6 +314,12 @@ const App = () => {
 	useEffect(() => {
 		checkWhetherWalletConnected();
 	}, [])
+
+	useEffect(() => {
+		if (network === 'Polygon Mainnet') {
+			fetchMints();
+		}
+	}, [currentAccount, network]);
 
   return (
 		<div className="App">
@@ -277,7 +360,7 @@ const App = () => {
 						href={TWITTER_LINK}
 						target="_blank"
 						rel="noreferrer"
-					>{`built with @${TWITTER_HANDLE}`}</a>
+					>{`Sends all ❤️ to Sigrid from @${TWITTER_HANDLE}`}</a>
 					<img alt="Buildspace Logo" className="twitter-logo" src={unicornEmoji} />
 					<a
 						className="footer-text"
