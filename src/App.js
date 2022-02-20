@@ -15,7 +15,7 @@ import { networks } from './utils/networks';
 // Constants
 const TWITTER_HANDLE = 'jypthemiracle';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const BUILDSPACE = 'buildspace.so';
+const BUILDSPACE = 'http://buildspace.so';
 
 const App = () => {
 
