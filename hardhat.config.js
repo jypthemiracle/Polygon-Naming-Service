@@ -30,6 +30,24 @@ module.exports = {
     ]
   },
   networks: {
+    // mumbai: {
+    //   url: "https://polygon-mumbai.g.alchemy.com/v2/" + process.env.ALCHEMY_MUMBAI_KEY,
+    //   accounts: [process.env.METAMASK_PRIVATE_KEY],
+    //   gas: 9100000,
+    //   gasPrice: 8000000000
+    // },
+    // ropsten: {
+    //   url: "https://ethereum-ropsten-rpc.allthatnode.com/" + process.env.DSRV_ROPSTEN_KEY,
+    //   accounts: [process.env.METAMASK_PRIVATE_KEY],
+    //   gas: 9100000,
+    //   gasPrice: 8000000000
+    // },
+    // rinkeby: {
+    //   url: "https://ethereum-rinkeby-rpc.allthatnode.com/" + process.env.DSRV_ROPSTEN_KEY,
+    //   accounts: [process.env.METAMASK_PRIVATE_KEY],
+    //   gas: 9100000,
+    //   gasPrice: 8000000000
+    // },
     polygon: {
       url: "https://polygon-mainnet.g.alchemy.com/v2/sdY2bOZQToMBNzEh7_FMgdvx9pB_jUfF",
       accounts: [process.env.METAMASK_PRIVATE_KEY]
