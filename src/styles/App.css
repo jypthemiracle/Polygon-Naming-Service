@@ -269,6 +269,11 @@ input:focus {
   cursor: pointer;
 }
 
+.loading-indicator {
+  width: 100px; /* 정렬하려는 요소의 넓이를 반드시 지정 */
+  margin: 0 auto;
+}
+
 /* KeyFrames */
 @-webkit-keyframes gradient-animation {
   0% {

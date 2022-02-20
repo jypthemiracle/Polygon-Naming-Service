@@ -136,11 +136,12 @@ const App = () => {
 				if (receipt.status === 1) {
 					window.alert('Domain minted! Check at PolygonScan. https://polygonscan.com/tx/' + tx.hash);
 
-					console.log('Set the record for the domain.');
-					tx = contract.setRecord(domain, record);
-					await tx.wait();
+					window.alert('Now, we are going to set the record for the domain. Verify the transaction.');
+					let tx2 = await contract.setRecord(domain, record);
+					const receipt = await trackPromise(tx2.wait());
 					
-					window.alert('Record Set! Check at PolygonScan. https://polygonscan.com/tx/' + tx.hash);
+					console.log(receipt);
+					window.alert('Record Set! Check at PolygonScan. https://polygonscan.com/tx/' + tx2.hash);
 				}
 
 				setDomain('');
@@ -168,7 +169,7 @@ const App = () => {
             <div className="left">
               <p className="title">👩 Sigrid Name Service</p>
               <p className="subtitle">Sigrid Lives Immortal in Polygon Blockchain!</p>
-    			<LoadingIndicator/>
+    			<LoadingIndicator className="loading-indicator"></LoadingIndicator>
             </div>
 					</header>
 				</div>
