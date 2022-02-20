@@ -7,16 +7,22 @@ import sigirdLogo from './assets/sigrid-logo.svg';
 import { TLD, CONTRACT_ADDRESS } from './utils/constants';
 import { trackPromise, usePromiseTracker } from "react-promise-tracker";
 import { LoadingIndicator } from "./index.js";
+import polygonLogo from './assets/polygonlogo.png';
+import ethLogo from './assets/ethlogo.png';
+import unicornEmoji from './assets/unicorn-emoji.jpg';
+import { networks } from './utils/networks';
 
 // Constants
 const TWITTER_HANDLE = 'jypthemiracle';
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
+const BUILDSPACE = 'buildspace.so';
 
 const App = () => {
 
 	const [currentAccount, setCurrentAccount] = useState('');
 	const [domain, setDomain] = useState('');
 	const [record, setRecord] = useState('');
+	const [network, setNetwork] = useState('');
 
 	const checkWhetherWalletConnected = async () => {
 		// window.ethereum
@@ -36,10 +42,24 @@ const App = () => {
 			const account = accounts[0];
 			console.log('authroized account is: ', account);
 			setCurrentAccount(account);
-			return;
 		}
-		console.log('nothing account found.');
-		return;
+
+		if (accounts.length === 0) {
+			console.log('nothing account found.');
+		}
+
+		const chainId = await ethereum.request({
+			method: 'eth_chainId' 
+		});
+
+		setNetwork(networks[chainId]);
+
+		ethereum.on('chainChanged', handleChainChanged);
+		
+		// Reload the page when they change networks
+		function handleChainChanged(_chainId) {
+			window.location.reload();
+		}
 	}
 
 	const connectWallet = async () => {
@@ -79,6 +99,19 @@ const App = () => {
 	)
 
 	const renderInputForm = () => {
+		if (network !== 'Polygon Mainnet') {
+			return (
+				<div className="connect-wallet-container">
+					<p>Please connect to the Polygon Mainnet</p>
+					<p>You are now in {network}</p> 
+					<br>
+					
+					</br>
+					<img src="https://c.tenor.com/_3o1oxx42_oAAAAC/sigrid-the-best-ive-ever-had.gif" alt="sigrid gif" />
+				</div>
+			);
+		}
+
 		return (
 			<div className="form-container">
 				<div className="first-row">
@@ -171,6 +204,14 @@ const App = () => {
               <p className="subtitle">Sigrid Lives Immortal in Polygon Blockchain!</p>
     			<LoadingIndicator className="loading-indicator"></LoadingIndicator>
             </div>
+			{/* Display a logo and wallet connection status*/}
+			<div>
+				<div className="right">
+					<img alt="Network logo" className="logo" src={network.includes("Polygon") ? polygonLogo : ethLogo}></img>
+					{ currentAccount ? <p>Wallet : { currentAccount.slice(0, 6) }...{ currentAccount.slice(-4) }</p> : <p> Not Connected </p> }
+				</div>
+			</div>
+
 					</header>
 				</div>
 
@@ -190,6 +231,13 @@ const App = () => {
 						target="_blank"
 						rel="noreferrer"
 					>{`built with @${TWITTER_HANDLE}`}</a>
+					<img alt="Buildspace Logo" className="twitter-logo" src={unicornEmoji} />
+					<a
+						className="footer-text"
+						href={BUILDSPACE}
+						target="_blank"
+						rel="noreferrer"
+					>{'      Learned @Buildspace'}</a>
 				</div>
 			</div>
 		</div>
