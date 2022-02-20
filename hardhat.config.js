@@ -49,7 +49,7 @@ module.exports = {
     //   gasPrice: 8000000000
     // },
     polygon: {
-      url: "https://polygon-mainnet.g.alchemy.com/v2/sdY2bOZQToMBNzEh7_FMgdvx9pB_jUfF",
+      url: "https://polygon-mainnet.g.alchemy.com/v2/" + process.env.ALCHEMY_API_KEY,
       accounts: [process.env.METAMASK_PRIVATE_KEY]
     }
   },
