@@ -196,7 +196,9 @@ const App = () => {
   return (
 		<div className="App">
 			<div className="container">
-				<img alt="Sigrid Logo" className="sigrid-logo" src={sigirdLogo} />
+				<a href="http://thisissigrid.com/">
+					<img alt="Sigrid Logo" className="sigrid-logo" src={sigirdLogo} />
+				</a>
 				<div className="header-container">
 					<header>
             <div className="left">
