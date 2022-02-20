@@ -23,6 +23,7 @@ const App = () => {
 	const [domain, setDomain] = useState('');
 	const [record, setRecord] = useState('');
 	const [network, setNetwork] = useState('');
+	const [loading, setLoading] = useState(false);
 	const [editing, setEditing] = useState(false);
 	const [mints, setMints] = useState([]);
 
@@ -95,7 +96,7 @@ const App = () => {
 		if (!record || !domain) {
 			return;
 		}
-		setEditing(true);
+		setLoading(true);
 		console.log("Updating domain: ", domain, "with record", record);
 
 		try {
@@ -117,7 +118,7 @@ const App = () => {
 			alert("A problem encountered. please try again.");
 			console.log(error);
 		}
-		setEditing(false);
+		setLoading(false);
 	}
 
 	const switchNetwork = async() => {
@@ -189,6 +190,43 @@ const App = () => {
 		}
 	}
 
+	const renderMints = () => {
+		if (currentAccount && mints.length > 0) {
+			return (
+				<div className="mint-container">
+					<p className="subtitle">Who Loves Sigrid 💕 , and Mints Sigrid ⛏️ at Polygon Network?</p>
+					<div className="mint-list">
+						{ mints.map((mint, index) => {
+							return (
+								<div className="mint-item" key={index}>
+									<div className='mint-row'>
+										<a className="link" href={`https://opensea.io/assets/matic/${CONTRACT_ADDRESS}/${mint.id}`} target="_blank" rel="noopener noreferrer">
+											<p className="underlined">{' '}{mint.name}{TLD}{' '}</p>
+										</a>
+										{/* If mint.owner is currentAccount, add an "edit" button*/}
+										{ mint.owner.toLowerCase() === currentAccount.toLowerCase() ?
+											<button className="edit-button" onClick={() => { editRecord(mint.name)}}>
+												<img className="edit-icon" src="https://img.icons8.com/metro/26/000000/pencil.png" alt="Edit button" />
+											</button>
+											:
+											null
+										}
+									</div>
+								<p> {mint.record} </p>
+								</div>)
+						})}
+					</div>
+				</div>
+			)
+		}
+	}
+
+	const editRecord = (name) => {
+		console.log("Editing record for", name);
+		setEditing(true);
+		setDomain(name);
+	}
+
 	const renderImageWhenNotYetConnected = () => (
 		<div className="connect-wallet-container">
 			<img src="https://c.tenor.com/ahn1CHNNSxQAAAAC/sigrid-it-could-never-be-us.giff" alt="sigrid gif" />
@@ -228,18 +266,16 @@ const App = () => {
 					{/* If the editing variable is true, return the "Set record" and "Cancel" button */}
 					{editing ? (
 						<div className="button-container">
-							// This will call the updateDomain function we just made
-							<button className='cta-button mint-button' disabled={editing} onClick={updateDomain}>
+							<button className='cta-button mint-button' disabled={loading} onClick={updateDomain}>
 								Set record
-							</button>  
-							// This will let us get out of editing mode by setting editing to false
+							</button>
 							<button className='cta-button mint-button' onClick={() => {setEditing(false)}}>
 								Cancel
 							</button>  
 						</div>
 					) : (
 						// If editing is not true, the mint button will be returned instead
-						<button className='cta-button mint-button' disabled={editing} onClick={mintDomain}>
+						<button className='cta-button mint-button' disabled={loading} onClick={mintDomain}>
 							Mint
 						</button>
 					)}
@@ -276,7 +312,7 @@ const App = () => {
 				const signer = provider.getSigner();
 				const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI.abi, signer);
 				
-				console.log('Going to pop wallet to pay gas...')
+				console.log('Going to pop wallet to pay gas...');
 				let tx = await contract.register(domain, { value: ethers.utils.parseEther(price(domain))});
 				console.log('Wait for the transaction was successfully completed.');
 
@@ -352,6 +388,7 @@ const App = () => {
 		{!currentAccount && renderImageWhenNotYetConnected()} */}
 		{/* Render the input form if an account is connected */}
 		{currentAccount && renderInputForm()}
+		{mints && renderMints()}
 
         <div className="footer-container">
 					<img alt="Twitter Logo" className="twitter-logo" src={twitterLogo} />
